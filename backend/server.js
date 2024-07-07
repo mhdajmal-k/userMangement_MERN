@@ -10,8 +10,11 @@ import { connectDB } from "./config/dbconfig.js";
 const app = express();
 
 connectDB()
+app.use(express.json())
 
-app.use("/api/user",userRouter)
+app.use("/api",userRouter)
+
+
 
 app.use(notFound)
 app.use(errorHandler)
