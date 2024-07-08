@@ -1,11 +1,12 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { succsess, waring } from "../utils/tostify";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../redux/useSlice";
 
 const SignUp = () => {
   const { loading, error } = useSelector((state) => state.user);
+  const navigate=useNavigate()
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     userName: "",
@@ -44,10 +45,15 @@ const SignUp = () => {
         if (response.success) {
           if (response.message == "user created") {
             succsess("Registered successFully");
+            setTimeout(()=>{
+
+              navigate("/login")
+            },2100)
+
           }
         }
       } catch (error) {
-        waring(error.message);
+        waring(error.error);
       }
     }
   };
@@ -56,7 +62,7 @@ const SignUp = () => {
     <Fragment>
       <section className="flex justify-center bg-gray-200 items-center min-h-screen box-border">
         <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-sm">
-          <h1 className="text-center font-bold uppercase m-3">Sign In</h1>
+          <h1 className="text-center font-bold uppercase m-3">Sign Up</h1>
           <form onSubmit={handleSubmit}>
             <label htmlFor="useName" className="block m-2">
               UserName
@@ -104,7 +110,7 @@ const SignUp = () => {
                 </button>
               ) : (
                 <button className="bg-blue-600 text-white rounded px-3 py-2 mt-1 hover:opacity-70">
-                  Sign in
+                  Sign Up
                 </button>
               )}
             </div>

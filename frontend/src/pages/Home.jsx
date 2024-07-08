@@ -1,11 +1,12 @@
 import React,{Fragment} from 'react'
 import NavBar from '../component/NavBar'
+import Home from '../component/Home'
 
 const HomePage = () => {
   return (
   <Fragment>
 <NavBar/>
-    <div>HomePage</div>
+  <Home/>
   </Fragment>
   )
 }

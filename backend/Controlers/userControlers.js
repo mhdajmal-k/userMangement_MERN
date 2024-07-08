@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import { User } from "../Model/useModel.js";
 import bcryptjs from "bcryptjs";
+import { generateToken } from "../util/generateToke.js";
 
 export const loginPage = asyncHandler(async (req, res) => {
   res.status(200).send("hello");
@@ -13,11 +14,7 @@ export const SingUp = asyncHandler(async (req, res) => {
     $or: [{ name: userName }, { email: email }],
   });
   if (existingUser) {
-    console.log("from existing user");
-    // throw new Error('Account Exists!!');
-    return res
-      .status(409)
-      .send({ message: "user Already exist", success: true });
+    return res.status(409).send({ error: "user Already exist", success: true });
   }
   const hashingPassword = bcryptjs.hashSync(password, 10);
   const creatingNewUser = new User({
@@ -29,7 +26,36 @@ export const SingUp = asyncHandler(async (req, res) => {
     await creatingNewUser.save();
     return res.status(201).send({ message: "user created", success: true });
   } catch (error) {
-    console.log("this is from error");
-    return res.status(400).send({ message: error.message, success: false });
+    return res.status(400).send({ error: error.message, success: false });
+  }
+});
+
+export const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (email) {
+    const validUser = await User.findOne({ email });
+    if (!validUser) {
+      return res.status(401).json({ error: "Invalid email" });
+    }
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) {
+      res.status(200);
+      throw new Error("Invalid credential");
+    }
+    const token = generateToken(validUser._id);
+    const toPassUserData = {
+      id: validUser._id,
+      name: validUser.userName,
+      email: validUser.email,
+    };
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "strict",
+        maxAge: 3600000,
+      })
+      .json({ message: "Logged in successfully", user: toPassUserData });
+  } else {
+    res.status(400).json({ error: "Email is required" });
   }
 });

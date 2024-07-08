@@ -10,7 +10,7 @@ const NavBar = () => {
         </div>
         <div className='flex cursor-pointer font-semibold'>
             <NavLink to={"/login"}> 
-
+              
             <h4 className='pr-16'> signIn</h4>
             </NavLink>
             <NavLink to={"/signup"}>
