@@ -11,10 +11,23 @@ const NavBar = () => {
         <h4>userManagement</h4>
       </div>
       {user?.name ? (
-        <div className="flex ">
-          <h3 className="mr-52">{user?.name}</h3>
-          <NavLink to={"/logout"}><h6 className="cursor-pointer mr-6 ">log Out</h6></NavLink>    
-        </div>
+        <div className="flex  items-center max-w-full justify-evenly">
+          <h3 className="mr-5">{user?.name}</h3>
+          <NavLink to={"/profile"}>
+          <h4 className=" mx-5 hover:underline cursor-pointer "> Profile</h4>
+          </NavLink>
+          <NavLink to={"/logout"}><button className="cursor-pointer mr-6n bg-red-500 hover:underline rounded-md uppercase p-1 mr-10  ">logOut</button></NavLink>    
+       
+        <img
+        src={
+          user.profileImage
+            ? user.profileImage
+            : "/image/profile.png"
+        }
+        className="h-6 w-6 mr-3 object-contain cursor-pointer rounded-full"
+        alt="profilePic"
+      />
+       </div>
       ) : (
         <div className="flex cursor-pointer font-semibold">
           <NavLink to={"/login"}>

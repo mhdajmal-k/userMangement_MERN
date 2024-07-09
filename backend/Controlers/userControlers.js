@@ -59,3 +59,41 @@ export const login = asyncHandler(async (req, res) => {
     res.status(400).json({ error: "Email is required" });
   }
 });
+
+export const updateUser = asyncHandler(async (req, res) => {
+  try {
+    console.log(req.params);
+    if (req.userId !== req.params.id) {
+      return res.status(401).json({ error: "Invalid user" });
+    }
+    const { name, email, ProfileImage } = req.body;
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // Update the user
+    const updatedUser = await User.findByIdAndUpdate(
+      req.userId,
+      { userName: name, email: email, profilePic: ProfileImage },
+      { new: true }
+    );
+    console.log(updatedUser.profilePic, "this is the updated profile pic");
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const toPassUserData = {
+      id: updatedUser._id,
+      name: updatedUser.userName,
+      email: updatedUser.email,
+      profileImage: updatedUser.profilePic,
+    };
+    // console.log(toPassUserData);
+    res.status(201).json({ message: "Updated successfully", user: toPassUserData });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+

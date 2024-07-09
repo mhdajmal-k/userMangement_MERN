@@ -37,6 +37,21 @@ export const LoginUser = createAsyncThunk(
   }
 );
 
+export const updateUser=createAsyncThunk(
+  'user/updateUser',async({ id, name, email, ProfileImage },{rejectWithValue})=>{
+    try {
+      const response=await axios.put(`http://localhost:5000/api/updateuser/${id}`,{ name, email, ProfileImage},{withCredentials:true})
+return response.data
+    } catch (error) {
+      if(error.response){
+        return rejectWithValue(error.response.data)
+      }else{
+        return rejectWithValue({error:'server Error'})
+      }
+    }
+  })
+
+
 const userSlice = createSlice({
   name: "userAuth",
   initialState: {
@@ -73,7 +88,19 @@ const userSlice = createSlice({
         (state.loading = false),
           (state.user = ""),
           (state.error = action.payload.error);
-      });
+      })
+      .addCase(updateUser.pending,(state)=>{
+        state.loading=true
+      })
+      .addCase(updateUser.rejected,(state,action)=>{
+        state.loading=false,
+        state.error=action.payload.error
+        state.user=null
+      })
+      .addCase(updateUser.fulfilled,(state,action)=>{
+        state.loading=true,
+        state.user=action.payload.user
+      })
   },
 });
 
