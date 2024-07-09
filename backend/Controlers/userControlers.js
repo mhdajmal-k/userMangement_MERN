@@ -95,5 +95,12 @@ export const updateUser = asyncHandler(async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
-});
+})
+
+
+
+export const userLogout=asyncHandler(async(req,res)=>{
+  console.log("inside the logout");
+  res.clearCookie('token').status(200).json({message:"logOuted successFully"})
+})
 

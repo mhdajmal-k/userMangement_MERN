@@ -12,7 +12,7 @@ import { updateUser } from "../redux/useSlice";
 
 const UserProfile = () => {
   const fileRef = useRef(null);
-  const { user, error } = useSelector((state) => state.user);
+  const { user, error,loading } = useSelector((state) => state.user);
   const [imageLoading, setImageLoading] = useState(0);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -133,8 +133,9 @@ const UserProfile = () => {
               onChange={handleForm}
               className="bg-gray-100 rounded-lg p-3 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+
             <button className="my-2 bg-green-500 p-1 mx-auto rounded-md px-8">
-              Update
+             {loading?"loading...":"Update"} 
             </button>
             <span className="text-red-500 text-sm">{error}</span>
           </form>

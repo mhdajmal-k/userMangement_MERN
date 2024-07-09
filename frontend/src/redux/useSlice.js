@@ -51,6 +51,20 @@ return response.data
     }
   })
 
+export const logOutUser=createAsyncThunk('user/logOutUser',async(_,{rejectWithValue})=>{
+  try {
+    const response =await axios.get("http://localhost:5000/api/logout",{withCredentials:true})
+    if(response.data){
+      return response.data
+    }
+  } catch (error) {
+    if(error.response){
+      return rejectWithValue(error.response)
+    }else{
+      return rejectWithValue({error:'server Error'})
+    }
+  }
+})
 
 const userSlice = createSlice({
   name: "userAuth",
@@ -98,8 +112,22 @@ const userSlice = createSlice({
         state.user=null
       })
       .addCase(updateUser.fulfilled,(state,action)=>{
-        state.loading=true,
+        state.loading=false,
         state.user=action.payload.user
+      })
+      .addCase(logOutUser.pending,(state,action)=>{
+state.loading=true
+      })
+      .addCase(logOutUser.rejected,(state,action)=>{
+        console.log(action,"this is the action");
+        // state.error=action.payload.error
+      })
+      .addCase(logOutUser.fulfilled,(state,action)=>{
+        state.error="",
+        state.user="",
+        state.loading=false,
+        state.success=false
+
       })
   },
 });
