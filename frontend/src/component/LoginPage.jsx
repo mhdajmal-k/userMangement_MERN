@@ -35,9 +35,9 @@ const Login = () => {
       console.log(response.message)
       if(response){
         succsess(response.message)
-        setTimeout(()=>{
+        
           navigate("/")
-        },2100)
+      
       }
      
     } catch (error) {
@@ -96,4 +96,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default React.memo(Login);

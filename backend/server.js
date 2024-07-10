@@ -7,6 +7,7 @@ dotenv.config();
 const port = process.env.PORT || 3001;
 
 import userRouter from "./Routers/userRouters.js";
+import adminRouter from './Routers/adminRouter.js'
 import { errorHandler } from "./middilware/errorMiddware.js";
 import { notFound } from "./middilware/errorHandiler.js";
 import { connectDB } from "./config/dbconfig.js";
@@ -23,6 +24,7 @@ app.use(cors({
 app.use(cookieParser())
 
 app.use("/api", userRouter);
+app.use('/api/admin',adminRouter)
 
 app.use(notFound);
 app.use(errorHandler);

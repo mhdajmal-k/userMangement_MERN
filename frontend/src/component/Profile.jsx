@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState,useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   getDownloadURL,
@@ -11,6 +11,7 @@ import { succsess, waring } from "../utils/tostify";
 import { updateUser } from "../redux/useSlice";
 
 const UserProfile = () => {
+  console.log("hi in from userProfile")
   const fileRef = useRef(null);
   const { user, error,loading } = useSelector((state) => state.user);
   const [imageLoading, setImageLoading] = useState(0);
@@ -56,6 +57,7 @@ const UserProfile = () => {
   };
 
   const handleForm = (e) => {
+    console.log("from handileForm")
     const { id, value } = e.target;
     setFormData({
       ...formData,
@@ -64,6 +66,7 @@ const UserProfile = () => {
   };
 
   const handelSubmit = async (e) => {
+    console.log("is from submit");
     e.preventDefault();
     console.log(formData);
 
@@ -145,4 +148,4 @@ const UserProfile = () => {
   );
 };
 
-export default UserProfile;
+export default React.memo(UserProfile);

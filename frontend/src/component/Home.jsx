@@ -6,7 +6,7 @@ const Home = () => {
     const {user,loading}=useSelector((state)=>state.user)
   return (
    <Fragment>
-    <div className='items-center flex justify-center h-screen bg-teal-800'>
+    <div className='items-center flex justify-center h-screen bg-white'>
         <h1>WELCOME {user.name}</h1>
         <h4 >{user.email}</h4>
         
