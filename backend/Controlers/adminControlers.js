@@ -1,4 +1,4 @@
-import { json } from "express";
+
 import asyncHandler from "express-async-handler";
 import { User } from "../Model/useModel.js";
 import { generateToken } from "../util/generateToke.js";
@@ -13,11 +13,9 @@ export const adminLogin = asyncHandler(async (req, res) => {
   if (!validatingEmail){
     return res.status(401).json({ error: "invalid credentials" });
   }
-  if (validatingEmail.password == password&&validatingEmail.isAdmin) {
-    console.log("hi form validata");
+  if (validatingEmail.password == password&&validatingEmail.isAdmin) {;
     const token = generateToken(validatingEmail._id);
-    res
-      .cookie("token", token, {
+    res.cookie("token", token, {
         httpOnly: true,
         sameSite: "strict",
         maxAge: 3600000,
@@ -29,35 +27,38 @@ export const adminLogin = asyncHandler(async (req, res) => {
 });
 
 export const getUser = asyncHandler(async (req, res) => {
-  console.log("hi");
-  const findUsers = await User.find({ isAdmin: false });
-  console.log(findUsers);
+
+  const findUsers = await User.find({ isAdmin: false })
   if (!findUsers) return res.status(404).json({ error: "users Not found" });
-  const { password: pass, ...rest } = findUsers.toObject();
-  res.status(200).json({ message: "got all user ", users: rest });
+  // const withOutPassword=findUsers.map((user)=>{
+  //   const {password,...rest}=user.toObject()
+  //   return rest
+  // })
+
+  res.status(200).json({ message: "got all user ", users: findUsers });
 });
 
 export const updateUser = asyncHandler(async (req, res) => {
   const validatingAdminId = await User.findById(req.adminId);
-  console.log(validatingAdminId);
+  console.log(validatingAdminId,"from updateUser");
   if (!validatingAdminId)
     return res.status(403).json({ error: "forbidden not access to update" });
 
   const { id } = req.params;
-  const { name, email } = req.body;
-  if (!name && !email)
+  const {userName, email } = req.body;
+  if (!userName && !email)
     return res.status(400).json({ error: "name and email is required" });
   const updatedUser = await User.findByIdAndUpdate(
     id,
-    { userName: name, email: email },
+    { userName: userName, email: email },
     { new: true }
   );
   const { password: pass, ...rest } = updatedUser.toObject();
   if (!updateUser)
-    return res.status(404).json({ error: "user Not found", user: rest });
+    return res.status(404).json({ error: "user Not found"});
   res
     .status(201)
-    .json({ message: "user updated Successfully", user: updateUser });
+    .json({ message: "user updated Successfully", user: rest });
 });
 
 export const createNewUser = asyncHandler(async (req, res) => {
