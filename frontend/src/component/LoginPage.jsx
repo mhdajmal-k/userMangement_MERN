@@ -41,7 +41,7 @@ const Login = () => {
       }
      
     } catch (error) {
-      
+      console.log(error,"is from the loginpage errror");
       waring(error.error)
     }
   };

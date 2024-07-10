@@ -5,7 +5,8 @@ import LoginPage from "./pages/Login";
 import SignUp from "./pages/SingUp";
 import Protected from "./component/protect";
 import Profile from "./pages/Profile";
-import AdminLogin from "./pages/adminLogin";
+import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminDashBoard from "./pages/AdminDashBoard";
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/admin/login" element={<AdminLogin/>}/>
+          <Route path="/admin/login" element={<AdminLoginPage/>}/>
+          <Route path="/admin/dashboard" element={<AdminDashBoard/>}/>
         </Routes>
       </BrowserRouter>
     </React.Fragment>
