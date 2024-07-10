@@ -7,6 +7,7 @@ import Protected from "./component/protect";
 import Profile from "./pages/Profile";
 import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashBoard from "./pages/AdminDashBoard";
+import NotFound from "./pages/404";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admin/login" element={<AdminLoginPage/>}/>
           <Route path="/admin/dashboard" element={<AdminDashBoard/>}/>
+          <Route path="*" element={<NotFound/>}/>
         </Routes>
       </BrowserRouter>
     </React.Fragment>
