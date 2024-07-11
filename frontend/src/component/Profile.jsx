@@ -11,7 +11,6 @@ import { succsess, waring } from "../utils/tostify";
 import { updateUser } from "../redux/useSlice";
 
 const UserProfile = () => {
-  console.log("hi in from userProfile")
   const fileRef = useRef(null);
   const { user, error,loading } = useSelector((state) => state.user);
   const [imageLoading, setImageLoading] = useState(0);
@@ -57,7 +56,6 @@ const UserProfile = () => {
   };
 
   const handleForm = (e) => {
-    console.log("from handileForm")
     const { id, value } = e.target;
     setFormData({
       ...formData,
@@ -66,9 +64,7 @@ const UserProfile = () => {
   };
 
   const handelSubmit = async (e) => {
-    console.log("is from submit");
     e.preventDefault();
-    console.log(formData);
 
     try {
       const response = await dispatch(updateUser({ ...formData, id: user.id })).unwrap();
@@ -78,7 +74,6 @@ const UserProfile = () => {
       }
     } catch (error) {
       waring(error.error);
-      console.log(error);
     }
   };
 

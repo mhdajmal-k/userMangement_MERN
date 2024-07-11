@@ -24,7 +24,7 @@ const Login = () => {
     e.preventDefault();
     const { email, password } = formData;
     if (email.trim() == "") {
-    console.log("hi")
+
       return waring("email is required");
     }
     if (password.trim() == "") {
@@ -32,7 +32,7 @@ const Login = () => {
     }
     try {
       const response=await dispatch(LoginUser(formData)).unwrap()
-      console.log(response.message)
+
       if(response){
         succsess(response.message)
         
@@ -41,7 +41,7 @@ const Login = () => {
       }
      
     } catch (error) {
-      console.log(error,"is from the loginpage errror");
+  
       waring(error.error)
     }
   };

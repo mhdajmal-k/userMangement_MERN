@@ -23,19 +23,18 @@ const AdminLogin = () => {
   const handleSubmit =async (e) => {
     e.preventDefault();
     const { email, password } = formData;
-    console.log(formData,"is the formdata");
     if (email.trim() == ""|| password.trim() == "") {
      waring("email and password is required");
      return
     }
     try {
-      console.log("hi");
+  
       const response =await dispatch(adminLogin(formData)).unwrap();
       if (response.message) {
         succsess(response.message);
         setTimeout(() => {
           navigate("/admin/dashboard");
-        }, 2100);
+        }, 1000);
       }
     } catch (error) {
       waring(error.error);

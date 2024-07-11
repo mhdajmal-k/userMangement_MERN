@@ -125,8 +125,8 @@ const userSlice = createSlice({
 state.loading=true
       })
       .addCase(logOutUser.rejected,(state,action)=>{
-        console.log(action,"this is the action");
-        // state.error=action.payload.error
+        state.loading=false
+        state.error=action.payload.error
       })
       .addCase(logOutUser.fulfilled,(state,action)=>{
         state.error="",

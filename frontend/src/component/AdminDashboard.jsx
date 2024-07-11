@@ -1,12 +1,20 @@
 import React, { useMemo, useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUser } from "../redux/adminSlice";
+import { fetchUser,deleteUser, logOutAdmin } from "../redux/adminSlice";
 import EditUserModal from "./EditModal";
+import CreateNewUser from "./createModal";
+import PropTypes  from "prop-types";
+import { succsess, waring } from "../utils/tostify";
+import { useNavigate } from "react-router-dom";
+
+
 
 const AdminDashboard = () => {
   const { loading, users, error } = useSelector((state) => state.admin);
   const dispatch = useDispatch();
+  const navigate=useNavigate()
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [search, setSearch] = useState("");
 
@@ -24,12 +32,36 @@ const AdminDashboard = () => {
     setIsModalOpen(false);
   };
 
-  const filteredUsers=useMemo(()=>{
+  const filteredUsers = useMemo(() => {
     return users.filter((user) =>
-      user.userName.toLowerCase().includes(search.toLowerCase())
-    )
-  },[users, search])
+      user.userName?.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [users, search]);
+  
+const handleDelate=(id)=>{
+    try { 
+      const response=dispatch(deleteUser(id)).unwrap();
+      if(response){
+        succsess(response.message)
+      }
+    } catch (error) {
+        waring(error.error)
+      
+    }
+}
 
+const handleLogout=()=>{
+  try {
+    const response=dispatch(logOutAdmin)
+    if(response){
+      navigate("/admin/login")
+    }
+  } catch (error) {
+    waring(error.message)
+  }
+}
+
+ 
   return (
     <React.Fragment>
       <nav className="flex justify-between bg-gray-800 text-white items-center">
@@ -47,12 +79,17 @@ const AdminDashboard = () => {
         </div>
         <div className="flex p-3 gap-6">
           <h5 className="text-lg font-semibold">Admin</h5>
-          <button className="text-lg font-semibold rounded-lg bg-red-500 px-4 mr-3 hover:bg-red-600">
+          <button className="text-lg font-semibold rounded-lg bg-red-500 px-4 mr-3 hover:bg-red-600" onClick={handleLogout}>
             LogOut
           </button>
         </div>
       </nav>
-      <section className="p-6">
+
+
+        
+      
+      <section className="p-9">
+      <h6 className="items-end bg-blue-500 max-w-fit px-2 rounded-lg py-1 cursor-pointer " onClick={()=>{setCreateModalOpen(true)}}>Create NewUser</h6>
         <div className="text-2xl font-bold mb-4 text-center">User Details</div>
         <table className="min-w-full bg-white border border-gray-300 shadow-md rounded-lg text-center">
           <thead>
@@ -89,7 +126,7 @@ const AdminDashboard = () => {
               </tr>
             ) : (
               filteredUsers.map((value) => (
-                <tr key={value._id} className="hover:bg-gray-100">
+                <tr key={value._id}  className="hover:bg-gray-100">
                   <td className="py-3 px-5 border-b border-gray-300">
                     {value.profilePic ? (
                       <img
@@ -106,7 +143,7 @@ const AdminDashboard = () => {
                     )}
                   </td>
                   <td className="py-3 px-5 border-b border-gray-300">
-                    {value.userName}
+                    {value?.userName||"N/A"}
                   </td>
                   <td className="py-3 px-5 border-b border-gray-300">
                     {value.email}
@@ -121,6 +158,12 @@ const AdminDashboard = () => {
                     >
                       Edit
                     </button>
+                    <button
+                      className="bg-red-500 p-1 ml-2  rounded-md"
+                      onClick={()=>handleDelate(value._id)}
+                    >
+                      Delete User
+                    </button>
                   </td>
                 </tr>
               ))
@@ -132,8 +175,19 @@ const AdminDashboard = () => {
       {isModalOpen && currentUser && (
         <EditUserModal user={currentUser} onClose={closeModal} />
       )}
+      {createModalOpen&&<CreateNewUser onCloseCreateModal={setCreateModalOpen}/>}
     </React.Fragment>
   );
 };
+
+AdminDashboard.prototype={
+  loading:PropTypes.bool,
+  users:PropTypes.arrayOf(PropTypes.shape({
+    _id:PropTypes.string.isRequired,
+    userName:PropTypes.string,
+    email:PropTypes.string
+  })),
+  error:PropTypes.string
+}
 
 export default AdminDashboard;

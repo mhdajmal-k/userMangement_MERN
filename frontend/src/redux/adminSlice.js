@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
+
 export const adminLogin = createAsyncThunk(
   "adminLogin",
   async (formData, { rejectWithValue }) => {
@@ -9,11 +10,9 @@ export const adminLogin = createAsyncThunk(
         "http://localhost:5000/api/admin/login",
         formData,{withCredentials:true}
       );
-      console.log(response, "this is the response the the axios");
       return response.data;
     } catch (error) {
       if (error.response) {
-        console.log(rejectWithValue(error.response.data,"is slice "));
         return rejectWithValue(error.response.data);
       } else {
         return rejectWithValue({ error: "Internal server error" });
@@ -25,13 +24,13 @@ export const adminLogin = createAsyncThunk(
 export const fetchUser=createAsyncThunk("fetchUser",async(_,{rejectWithValue})=>{
   try {
     const response=await axios("http://localhost:5000/api/admin/getUsers",{withCredentials:true})
-    console.log(response.data,"form fetchUsers")
+    // console.log(response.data,"form fetchUsers")
     return response.data
   } catch (error) {
     if(error.response){
       return rejectWithValue(error.response.data)
     }else{
-      console.log(error,"is form the error ");
+      // console.log(error,"is form the error ");
       return rejectWithValue({error:"internal Server error"})
     }
   }
@@ -40,9 +39,9 @@ export const fetchUser=createAsyncThunk("fetchUser",async(_,{rejectWithValue})=>
 export const updateUser=createAsyncThunk("updateUser",async(formData,{rejectWithValue})=>{
   try {
     const {id,...restData}=formData
-    console.log(id,":is the id from from data")
+    // console.log(id,":is the id from from data")
     const response=await axios.put(`http://localhost:5000/api/admin/updateUser/${id}`,restData,{withCredentials:true})
-    console.log(response);
+
     if(response.data){
 
       return response.data
@@ -55,6 +54,44 @@ export const updateUser=createAsyncThunk("updateUser",async(formData,{rejectWith
       return rejectWithValue({error:'internal server error'})
     }
   }
+})
+
+export const createNewUser=createAsyncThunk("createNewUser",async(formData,{rejectWithValue})=>{
+  try {
+    const response=await axios.post("http://localhost:5000/api/admin/createNewUser",formData,{withCredentials:true})
+  
+      return response.data
+    
+  } catch (error) {
+    if(error.response){
+      return rejectWithValue(error.response.data)
+    }else{
+      return rejectWithValue(error)
+    }
+  }
+})
+
+export const deleteUser=createAsyncThunk("deleteUser",async(id,{rejectWithValue})=>{
+  try {
+    const response =await axios.delete(`http://localhost:5000/api/admin/deleteUser/${id}`,{withCredentials:true})
+    return { id, ...response.data };
+  } catch (error) {
+    if(error.response){
+      return rejectWithValue(error.response.data)
+
+    }else{
+      return rejectWithValue({error:"internal server error"})
+    }
+  }
+})
+
+export const logOutAdmin=createAsyncThunk('logOutAdmin',async(_,{rejectWithValue})=>{
+try {
+  const response=await axios("http://localhost:5000/api/admin/logout",{withCredentials:true})
+  return response
+} catch (error) {
+  return rejectWithValue(error)
+}
 })
 
 const adminSlice = createSlice({
@@ -81,12 +118,10 @@ const adminSlice = createSlice({
         state.loading=true
       })
       .addCase(fetchUser.rejected,(state,action)=>{
-        console.log(action,"is from acion");
         state.loading=false,
         state.error=action.payload.error
       })
       .addCase(fetchUser.fulfilled,(state,action)=>{
-        console.log(action.payload,"from action")
         state.loading=false,
         state.error=""
         state.users=action.payload.users
@@ -102,6 +137,42 @@ const adminSlice = createSlice({
       .addCase(updateUser.fulfilled,(state,action)=>{
         state.loading=false,
      state.users=state.users.map((user)=>user._id===action.payload.user._id?action.payload.user:user)
+      })
+      .addCase(createNewUser.pending,(state)=>{
+        state.loading=true
+      })
+      .addCase(createNewUser.rejected,(state,action)=>{
+        state.loading=false,
+        state.error=action.payload.error
+      })
+      .addCase(createNewUser.fulfilled,(state,action)=>{
+        state.loading=false,
+        state.error="",
+        state.users.push(action.payload.user);
+      })
+      .addCase(deleteUser.pending,(state)=>{
+        state.loading=true
+      })
+      .addCase(deleteUser.rejected,(state,action)=>{
+        state.loading=false,
+        state.error=action.payload.error
+      })
+      .addCase(deleteUser.fulfilled,(state,action)=>{
+        state.loading=false,
+        state.error=""
+        state.users=state.users.filter((value)=>value._id!=action.payload.id)
+      })
+      .addCase(logOutAdmin.pending,(state)=>{
+        state.loading=true
+      })
+      .addCase(logOutAdmin.rejected,(state,action)=>{
+        state.loading=false,
+        state.error=action.payload.error
+      })
+      .addCase(logOutAdmin.fulfilled,(state,action)=>{
+        state.loading=false,
+        state.error=""
+        state.users.length==0
       })
   },
 });

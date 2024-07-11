@@ -1,29 +1,35 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
-import { updateUser } from "../redux/adminSlice";
+import { createNewUser } from "../redux/adminSlice";
 import { succsess, waring } from "../utils/tostify";
 
-const EditUserModal = ({ user, onClose }) => {
+const CreateNewUser = ({  onCloseCreateModal }) => {
   const { loading } = useSelector((state) => state.admin);
   const dispatch = useDispatch();
 
   const handelSubmit = async (e) => {
     e.preventDefault();
-  
-    const {userName,email}=formData
-    if(userName.trim()==""){
+
+    const {name,email,password}=formData
+    if(name.trim()==""){
       return waring("username  is required") 
     }
-    if(email.trim()=="")return waring("email is required")
+    if(email.trim()==""){
+        return waring("email is required")
+    }
+    if(password.trim()==""){
+        return waring("password is required")
+    }
     try {
-      const response = await dispatch(updateUser(formData)).unwrap();
-   
+      const response = await dispatch(createNewUser(formData)).unwrap();
+
+
 
       if (response.message) {
         succsess(response.message);
         setTimeout(() => {
-          onClose(false);
+         onCloseCreateModal(false);
         }, 1000);
       }
     } catch (error) {
@@ -31,10 +37,11 @@ const EditUserModal = ({ user, onClose }) => {
     }
   };
   const [formData, setFormData] = useState({
-    userName: user.userName,
-    email: user.email,
-    id: user._id,
+    name:"",
+    email: "",
+    password: "",
   });
+
 
   const handelChange = (e) => {
 
@@ -54,8 +61,8 @@ const EditUserModal = ({ user, onClose }) => {
             <label className="block text-gray-700">Username</label>
             <input
               type="text"
-              id="userName"
-              value={formData.userName}
+              id="name"
+              value={formData.name}
               className="mt-1 p-2 border border-gray-300 rounded w-full"
               onChange={handelChange}
             />
@@ -70,19 +77,29 @@ const EditUserModal = ({ user, onClose }) => {
               onChange={handelChange}
             />
           </div>
+          <div className="mb-4">
+            <label className="block text-gray-700">password</label>
+            <input
+              type="password"
+              id="password"
+              value={formData.password}
+              className="mt-1 p-2 border border-gray-300 rounded w-full"
+              onChange={handelChange}
+            />
+          </div>
           <div className="flex justify-end gap-4">
             <button
               type="button"
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              onClick={onClose}
+              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              onClick={()=>onCloseCreateModal(false)}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-500-600"
             >
-              Save
+              createNewUser
             </button>
           </div>
         </form>
@@ -91,4 +108,4 @@ const EditUserModal = ({ user, onClose }) => {
   );
 };
 
-export default EditUserModal;
+export default CreateNewUser;

@@ -8,7 +8,6 @@ export const loginPage = asyncHandler(async (req, res) => {
 });
 
 export const SingUp = asyncHandler(async (req, res) => {
-  console.log(req.body);
   const { userName, email, password } = req.body;
   const existingUser = await User.findOne({
     $or: [{ name: userName }, { email: email }],
@@ -62,7 +61,6 @@ export const login = asyncHandler(async (req, res) => {
 
 export const updateUser = asyncHandler(async (req, res) => {
   try {
-    console.log(req.params);
     if (req.userId !== req.params.id) {
       return res.status(401).json({ error: "Invalid user" });
     }
@@ -77,7 +75,6 @@ export const updateUser = asyncHandler(async (req, res) => {
       { userName: name, email: email, profilePic: ProfileImage },
       { new: true }
     );
-    console.log(updatedUser.profilePic, "this is the updated profile pic");
 
     if (!updatedUser) {
       return res.status(404).json({ error: "User not found" });
@@ -100,7 +97,6 @@ export const updateUser = asyncHandler(async (req, res) => {
 
 
 export const userLogout=asyncHandler(async(req,res)=>{
-  console.log("inside the logout");
   res.clearCookie('token').status(200).json({message:"logOuted successFully"})
 })
 
